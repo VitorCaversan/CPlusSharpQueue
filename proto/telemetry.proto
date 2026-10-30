@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package cplussharpqueue.telemetry;
+
+option csharp_namespace = "CPlusSharpQueue.Telemetry";
+
+enum Architecture
+{
+    ARCHITECTURE_UNSPECIFIED = 0;
+    ARCHITECTURE_X86 = 1;
+    ARCHITECTURE_ARM64 = 2;
+}
+
+message Sample {
+    uint64 timestamp_unix_ms = 1;
+    float cpu_percent = 2;
+    uint64 mem_used_bytes = 3;
+}
+
+message Batch {
+    string host = 1;
+    Architecture architecture = 2;
+    uint64 sequence = 3;
+    uint64 mem_total_bytes = 4;
+    repeated Sample samples = 5;
+}
