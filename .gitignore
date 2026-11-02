@@ -73,3 +73,4 @@ obj/
 .vs/
 *.user
 vcpkg_installed/
+data/

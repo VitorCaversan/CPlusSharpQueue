@@ -7,7 +7,7 @@ option csharp_namespace = "CPlusSharpQueue.Telemetry";
 enum Architecture
 {
     ARCHITECTURE_UNSPECIFIED = 0;
-    ARCHITECTURE_X86 = 1;
+    ARCHITECTURE_X64 = 1;
     ARCHITECTURE_ARM64 = 2;
 }
 
