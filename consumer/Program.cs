@@ -7,7 +7,7 @@ public class Program()
     {
         Console.WriteLine(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location));
 
-        Batch batch = Batch.Parser.ParseFrom(File.ReadAllBytes("../../../../data/batch.bin"));
+        Batch batch = Batch.Parser.ParseFrom(File.ReadAllBytes("../../../../data/latest.bin"));
 
         Console.WriteLine(batch);
     }
