@@ -17,6 +17,16 @@ namespace {
             (n > 0 && n < MAX_PATH) ? std::filesystem::path(buffer) : std::filesystem::path(L"C:\\ProgramData");
         return base / L"CPlusSharpQueue";
     }
+
+    void log_event(WORD type, const wchar_t* text)
+    {
+        HANDLE source = RegisterEventSourceW(nullptr, kServiceName);
+        if (!source)
+            return;
+        const wchar_t* strings[] = { text };
+        ReportEventW(source, type, 0, 0, nullptr, 1, 0, strings, nullptr);
+        DeregisterEventSource(source);
+    }
 }
 
 // RAII Lifetime mangement
@@ -102,6 +112,7 @@ void Service::on_service_main()
     {
         Worker worker(service_output_dir());  // initialization happens while START_PENDING
         report_status(SERVICE_RUNNING);
+        log_event(EVENTLOG_INFORMATION_TYPE, L"Started");
         ok = worker.run(stopEvent_);
     }
     catch (const std::exception&)
@@ -112,6 +123,7 @@ void Service::on_service_main()
     if (!ok)
         status_.dwServiceSpecificExitCode = 1;
     report_status(SERVICE_STOPPED, ok ? NO_ERROR : ERROR_SERVICE_SPECIFIC_ERROR);
+    log_event(ok ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE, L"Started");
 }
 
 DWORD Service::on_control(DWORD control)
