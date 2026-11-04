@@ -122,8 +122,9 @@ void Service::on_service_main()
 
     if (!ok)
         status_.dwServiceSpecificExitCode = 1;
+    log_event(ok ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE,
+        ok ? L"Stopped" : L"Stopped with error");
     report_status(SERVICE_STOPPED, ok ? NO_ERROR : ERROR_SERVICE_SPECIFIC_ERROR);
-    log_event(ok ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE, L"Started");
 }
 
 DWORD Service::on_control(DWORD control)
