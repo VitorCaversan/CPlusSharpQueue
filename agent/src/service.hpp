@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include "unique_handle.hpp"
 
 class Service
 {
@@ -7,7 +8,6 @@ public:
     Service();
     ~Service();
 
-    // Owns a kernel handle: copying would close it twice.
     Service(const Service&) = delete;
     Service& operator=(const Service&) = delete;
 
@@ -28,7 +28,7 @@ private:
     // keep the current context for method callbacks on these handlers
     inline static Service* instance_ = nullptr;
 
-    HANDLE stopEvent_ = nullptr;
+    UniqueHandle stopEvent_;
     SERVICE_STATUS_HANDLE statusHandle_ = nullptr;
     SERVICE_STATUS status_{};
     DWORD checkPoint_ = 1;

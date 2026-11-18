@@ -42,7 +42,6 @@ Service::Service()
 Service::~Service()
 {
     instance_ = nullptr;
-    CloseHandle(stopEvent_);
 }
 
 // Public entrypoints
@@ -69,7 +68,7 @@ int Service::run_in_console()
     std::fwprintf(stdout, L"Running in console, writing to .\\data. Ctrl+C to stop.\n");
 
     Worker worker(L"data");
-    const bool ok = worker.run(stopEvent_);
+    const bool ok = worker.run(stopEvent_.get());
 
     SetConsoleCtrlHandler(&Service::console_handler, FALSE);
     return ok ? 0 : 1;
@@ -91,7 +90,7 @@ BOOL WINAPI Service::console_handler(DWORD type)
 {
     if (type == CTRL_C_EVENT || type == CTRL_BREAK_EVENT || type == CTRL_CLOSE_EVENT)
     {
-        SetEvent(instance_->stopEvent_);
+        SetEvent(instance_->stopEvent_.get());
         return TRUE;
     }
     return FALSE;
@@ -113,7 +112,7 @@ void Service::on_service_main()
         Worker worker(service_output_dir());  // initialization happens while START_PENDING
         report_status(SERVICE_RUNNING);
         log_event(EVENTLOG_INFORMATION_TYPE, L"Started");
-        ok = worker.run(stopEvent_);
+        ok = worker.run(stopEvent_.get());
     }
     catch (const std::exception&)
     {
@@ -134,7 +133,7 @@ DWORD Service::on_control(DWORD control)
     case SERVICE_CONTROL_STOP:
     case SERVICE_CONTROL_SHUTDOWN:
         report_status(SERVICE_STOP_PENDING, NO_ERROR, 5000);
-        SetEvent(stopEvent_);  // the real work happens in on_service_main
+        SetEvent(stopEvent_.get());  // the real work happens in on_service_main
         return NO_ERROR;
     case SERVICE_CONTROL_INTERROGATE:
         return NO_ERROR;

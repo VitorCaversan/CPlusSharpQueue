@@ -11,7 +11,7 @@ public:
     UniqueHandle(const UniqueHandle&) = delete;
     UniqueHandle& operator =(const UniqueHandle&) = delete;
     UniqueHandle(UniqueHandle&& other) noexcept;
-    UniqueHandle&& operator =(UniqueHandle&& other) noexcept;
+    UniqueHandle& operator =(UniqueHandle&& other) noexcept;
 
     [[nodiscard]] HANDLE get() const noexcept;
     [[nodiscard]] HANDLE release() noexcept;
@@ -20,4 +20,5 @@ public:
 
 private:
     HANDLE handle_ = nullptr;
-}
+    static bool is_valid(HANDLE h) noexcept;
+};
